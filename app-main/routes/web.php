@@ -17,6 +17,13 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
+
+    Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::livewire('users', 'pages::admin.users.index')->name('users');
+    });
+
+    Route::view('catalog', 'catalog.index')->name('catalog.index');
+    Route::view('campaigns', 'campaigns.index')->name('campaigns.index');
 });
 
 require __DIR__.'/auth.php';

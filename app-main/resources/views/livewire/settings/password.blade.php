@@ -4,9 +4,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new class extends Component {
+new #[Layout('components.layouts.app')] class extends Component {
     public string $current_password = '';
     public string $password = '';
     public string $password_confirmation = '';
@@ -37,11 +38,11 @@ new class extends Component {
     }
 }; ?>
 
-<section class="w-full">
+<section class="w-full space-y-6">
     @include('partials.settings-heading')
 
     <x-settings.layout heading="Update password" subheading="Ensure your account is using a long, random password to stay secure">
-        <form wire:submit="updatePassword" class="mt-6 space-y-6">
+        <form wire:submit="updatePassword" class="space-y-6">
             <flux:input
                 wire:model="current_password"
                 id="update_password_current_passwordpassword"
@@ -70,10 +71,8 @@ new class extends Component {
                 autocomplete="new-password"
             />
 
-            <div class="flex items-center gap-4">
-                <div class="flex items-center justify-end">
-                    <flux:button variant="primary" type="submit" class="w-full">{{ __('Save') }}</flux:button>
-                </div>
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <flux:button variant="primary" type="submit" class="w-full sm:w-auto">{{ __('Update password') }}</flux:button>
 
                 <x-action-message class="me-3" on="password-updated">
                     {{ __('Saved.') }}
