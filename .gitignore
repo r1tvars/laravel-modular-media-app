@@ -1,0 +1,7 @@
+/app-main/vendor
+/app-main/node_modules
+/app-main/.env
+/app-main/storage/*.key
+
+/.idea
+/.vscode
