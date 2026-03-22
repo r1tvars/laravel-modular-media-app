@@ -20,6 +20,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
         Route::livewire('users', 'pages::admin.users.index')->name('users');
+        Route::livewire('users/create', 'pages::admin.users.create')->name('users.create');
+        Route::livewire('users/{user}/edit', 'pages::admin.users.edit')->name('users.edit');
     });
 
     Route::view('catalog', 'catalog.index')->name('catalog.index');
