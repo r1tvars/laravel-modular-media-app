@@ -24,7 +24,6 @@ Route::middleware(['auth'])->group(function () {
         Route::livewire('users/{user}/edit', 'pages::admin.users.edit')->name('users.edit');
     });
 
-    Route::view('catalog', 'catalog.index')->name('catalog.index');
     Route::view('campaigns', 'campaigns.index')->name('campaigns.index');
 });
 
