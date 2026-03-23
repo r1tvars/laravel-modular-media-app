@@ -5,6 +5,7 @@ namespace Module1\CatalogModule\Http\Controllers;
 use Illuminate\Contracts\View\View;
 use Illuminate\Routing\Controller;
 use Module1\CatalogModule\Services\CatalogService;
+use Module1\CatalogModule\Models\CatalogItem;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -54,5 +55,60 @@ class CatalogController extends Controller
         return redirect()
             ->route('catalog.index')
             ->with('success', 'Catalog item created successfully.');
+    }
+
+    /**
+     * Show the catalog item edit form.
+     */
+    public function edit(CatalogItem $catalogItem): View
+    {
+        return view('catalog::edit', [
+            'item' => $catalogItem,
+        ]);
+    }
+
+    /**
+     * Update an existing catalog item.
+     */
+    public function update(Request $request, CatalogItem $catalogItem): RedirectResponse
+    {
+        $validated = $this->validateCatalogItem($request);
+
+        $this->catalogService->update($catalogItem, $validated);
+
+        return redirect()
+            ->route('catalog.index')
+            ->with('success', 'Catalog item updated successfully.');
+    }
+
+    /**
+     * Delete a catalog item.
+     */
+    public function destroy(CatalogItem $catalogItem): RedirectResponse
+    {
+        $this->catalogService->delete($catalogItem);
+
+        return redirect()
+            ->route('catalog.index')
+            ->with('success', 'Catalog item deleted successfully.');
+    }
+
+    /**
+     * Validate catalog item form input.
+     *
+     * @return array
+     */
+    private function validateCatalogItem(Request $request): array
+    {
+        return $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'release_date' => ['nullable', 'date'],
+            'genre' => ['nullable', 'string', 'max:255'],
+            'publication_status' => ['required', 'string', 'in:draft,published,archived'],
+            'availability_status' => ['required', 'string', 'in:inactive,active,coming_soon,leaving_soon'],
+            'poster_path' => ['nullable', 'string', 'max:255'],
+            'notification_label' => ['nullable', 'string', 'max:255'],
+        ]);
     }
 }

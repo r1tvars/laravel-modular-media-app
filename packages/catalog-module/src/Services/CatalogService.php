@@ -26,4 +26,24 @@ class CatalogService
     {
         return CatalogItem::query()->create($data);
     }
+
+    /**
+     * Update an existing catalog item using validated input data.
+     *
+     * @param array $data
+     */
+    public function update(CatalogItem $catalogItem, array $data): CatalogItem
+    {
+        $catalogItem->update($data);
+
+        return $catalogItem->refresh();
+    }
+
+    /**
+     * Delete a catalog item from the catalog.
+     */
+    public function delete(CatalogItem $catalogItem): void
+    {
+        $catalogItem->delete();
+    }
 }

@@ -30,6 +30,7 @@
                             <th class="px-4 py-3 text-left text-sm font-medium text-zinc-700 dark:text-zinc-200">Publication</th>
                             <th class="px-4 py-3 text-left text-sm font-medium text-zinc-700 dark:text-zinc-200">Availability</th>
                             <th class="px-4 py-3 text-left text-sm font-medium text-zinc-700 dark:text-zinc-200">Notification</th>
+                            <th class="px-4 py-3 text-right text-sm font-medium text-zinc-700 dark:text-zinc-200">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
@@ -61,10 +62,36 @@
                                 <td class="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-300">
                                     {{ $item->notification_label ?? '—' }}
                                 </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex justify-end gap-2">
+                                        <a
+                                            href="{{ route('catalog.edit', $item) }}"
+                                            class="inline-flex items-center rounded-lg border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 dark:border-zinc-600 dark:text-zinc-200"
+                                        >
+                                            Edit
+                                        </a>
+
+                                        <form
+                                            method="POST"
+                                            action="{{ route('catalog.destroy', $item) }}"
+                                            onsubmit="return confirm('Are you sure you want to delete this catalog item?');"
+                                        >
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button
+                                                type="submit"
+                                                class="inline-flex items-center rounded-lg border border-red-300 px-3 py-1.5 text-sm text-red-700 dark:border-red-800 dark:text-red-300"
+                                            >
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-4 py-6 text-sm text-zinc-500 dark:text-zinc-400">
+                                <td colspan="7" class="px-4 py-6 text-sm text-zinc-500 dark:text-zinc-400">
                                     No catalog items found.
                                 </td>
                             </tr>
