@@ -68,6 +68,7 @@ Install frontend dependencies, build assets, and run migrations for each variant
 docker compose exec app_catalog npm install
 docker compose exec app_catalog npm run build
 docker compose exec app_catalog php artisan migrate --force
+docker compose exec app_catalog php artisan db:seed --force
 ~~~
 
 ### Campaigns
@@ -76,6 +77,7 @@ docker compose exec app_catalog php artisan migrate --force
 docker compose exec app_campaigns npm install
 docker compose exec app_campaigns npm run build
 docker compose exec app_campaigns php artisan migrate --force
+docker compose exec app_campaigns php artisan db:seed --force
 ~~~
 
 ### Full
@@ -84,6 +86,7 @@ docker compose exec app_campaigns php artisan migrate --force
 docker compose exec app_full npm install
 docker compose exec app_full npm run build
 docker compose exec app_full php artisan migrate --force
+docker compose exec app_full php artisan db:seed --force
 ~~~
 
 ## Stop Containers
