@@ -54,20 +54,21 @@
                                     {{ $item->release_date?->format('Y-m-d') ?? '—' }}
                                 </td>
                                 <td class="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-300">
-                                    {{ $item->publication_status }}
+                                    {{ $item->publication_status?->label() ?? '—' }}
                                 </td>
                                 <td class="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-300">
-                                    {{ $item->availability_status }}
+                                    {{ $item->availability_status?->label() ?? '—' }}
                                 </td>
                                 <td class="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-300">
                                     {{ $item->notification_label ?? '—' }}
                                 </td>
                                 <td class="px-4 py-3">
                                     <div class="flex justify-end gap-2">
-                                        <a
-                                            href="{{ route('catalog.edit', $item) }}"
-                                            class="inline-flex items-center rounded-lg border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 dark:border-zinc-600 dark:text-zinc-200"
-                                        >
+                                        <a href="{{ route('catalog.show', $item) }}" class="inline-flex items-center rounded-lg border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 dark:border-zinc-600 dark:text-zinc-200">
+                                            View
+                                        </a>
+
+                                        <a href="{{ route('catalog.edit', $item) }}" class="inline-flex items-center rounded-lg border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 dark:border-zinc-600 dark:text-zinc-200">
                                             Edit
                                         </a>
 

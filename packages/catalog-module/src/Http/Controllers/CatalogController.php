@@ -8,6 +8,9 @@ use Module1\CatalogModule\Services\CatalogService;
 use Module1\CatalogModule\Models\CatalogItem;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Module1\CatalogModule\Enums\AvailabilityStatus;
+use Module1\CatalogModule\Enums\PublicationStatus;
 
 class CatalogController extends Controller
 {
@@ -25,6 +28,17 @@ class CatalogController extends Controller
             'items' => $this->catalogService->getAll(),
         ]);
     }
+
+    /**
+     * Display a single catalog item details page.
+     */
+    public function show(CatalogItem $catalogItem): View
+    {
+        return view('catalog::show', [
+            'item' => $catalogItem,
+        ]);
+    }
+
 
     /**
      * Show the catalog item creation form.
@@ -105,8 +119,8 @@ class CatalogController extends Controller
             'description' => ['nullable', 'string'],
             'release_date' => ['nullable', 'date'],
             'genre' => ['nullable', 'string', 'max:255'],
-            'publication_status' => ['required', 'string', 'in:draft,published,archived'],
-            'availability_status' => ['required', 'string', 'in:inactive,active,coming_soon,leaving_soon'],
+            'publication_status' => ['required', 'string', Rule::in(PublicationStatus::values())],
+            'availability_status' => ['required', 'string', Rule::in(AvailabilityStatus::values())],
             'poster_path' => ['nullable', 'string', 'max:255'],
             'notification_label' => ['nullable', 'string', 'max:255'],
         ]);

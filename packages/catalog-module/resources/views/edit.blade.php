@@ -75,9 +75,9 @@
                         class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
                         required
                     >
-                        <option value="draft" @selected(old('publication_status', $item->publication_status) === 'draft')>Draft</option>
-                        <option value="published" @selected(old('publication_status', $item->publication_status) === 'published')>Published</option>
-                        <option value="archived" @selected(old('publication_status', $item->publication_status) === 'archived')>Archived</option>
+                        <option value="draft" @selected(old('publication_status', $item->publication_status?->value) === 'draft')>Draft</option>
+                        <option value="published" @selected(old('publication_status', $item->publication_status?->value) === 'published')>Published</option>
+                        <option value="archived" @selected(old('publication_status', $item->publication_status?->value) === 'archived')>Archived</option>
                     </select>
                 </div>
 
@@ -89,10 +89,10 @@
                         class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
                         required
                     >
-                        <option value="inactive" @selected(old('availability_status', $item->availability_status) === 'inactive')>Inactive</option>
-                        <option value="active" @selected(old('availability_status', $item->availability_status) === 'active')>Active</option>
-                        <option value="coming_soon" @selected(old('availability_status', $item->availability_status) === 'coming_soon')>Coming soon</option>
-                        <option value="leaving_soon" @selected(old('availability_status', $item->availability_status) === 'leaving_soon')>Leaving soon</option>
+                        <option value="inactive" @selected(old('availability_status', $item->availability_status?->value) === 'inactive')>Inactive</option>
+                        <option value="active" @selected(old('availability_status', $item->availability_status?->value) === 'active')>Active</option>
+                        <option value="coming_soon" @selected(old('availability_status', $item->availability_status?->value) === 'coming_soon')>Coming soon</option>
+                        <option value="leaving_soon" @selected(old('availability_status', $item->availability_status?->value) === 'leaving_soon')>Leaving soon</option>
                     </select>
                 </div>
 
