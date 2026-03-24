@@ -11,6 +11,19 @@ services:
     depends_on:
       - db
 
+  queue:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: modular_media_app_queue
+    working_dir: /var/www/html
+    command: php artisan queue:work --tries=3 --timeout=90
+    volumes:
+      - ./app-main:/var/www/html
+      - ./packages:/var/www/packages
+    depends_on:
+      - db
+
   nginx:
     image: nginx:alpine
     container_name: modular_media_app_nginx

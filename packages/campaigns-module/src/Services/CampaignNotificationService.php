@@ -5,6 +5,7 @@ namespace Module2\CampaignsModule\Services;
 use Illuminate\Database\Eloquent\Collection;
 use Module2\CampaignsModule\Models\CampaignNotification;
 use SupportModule\Services\SlugGenerator;
+use App\Jobs\ProcessCampaignNotificationJob;
 
 /**
  * Handles campaign notification business operations.
@@ -42,7 +43,11 @@ class CampaignNotificationService
                 ->exists()
         );
 
-        return CampaignNotification::query()->create($data);
+        $campaign = CampaignNotification::query()->create($data);
+
+        ProcessCampaignNotificationJob::dispatch($campaign->id);
+
+        return $campaign;
     }
 
     /**
