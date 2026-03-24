@@ -17,13 +17,17 @@
                         Dashboard
                     </flux:navlist.item>
 
-                    <flux:navlist.item icon="film" :href="route('catalog.index')" :current="request()->routeIs('catalog.*')" wire:navigate>
-                        Catalog
-                    </flux:navlist.item>
+                    @if (Route::has('catalog.index'))
+                        <flux:navlist.item icon="film" :href="route('catalog.index')" :current="request()->routeIs('catalog.*')" wire:navigate>
+                            Catalog
+                        </flux:navlist.item>
+                    @endif
 
-                    <flux:navlist.item icon="megaphone" :href="route('campaigns.index')" :current="request()->routeIs('campaigns.*')" wire:navigate>
-                        Campaigns
-                    </flux:navlist.item>
+                    @if (Route::has('campaigns.index'))
+                        <flux:navlist.item icon="megaphone" :href="route('campaigns.index')" :current="request()->routeIs('campaigns.*')" wire:navigate>
+                            Campaigns
+                        </flux:navlist.item>
+                    @endif
 
                     @if (auth()->user()->isAdmin())
                         <flux:navlist.item icon="users" :href="route('admin.users')" :current="request()->routeIs('admin.*')" wire:navigate>

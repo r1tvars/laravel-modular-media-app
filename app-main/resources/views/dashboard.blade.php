@@ -12,12 +12,16 @@
                     </div>
 
                     <div class="flex flex-wrap gap-3">
-                        <a href="{{ route('catalog.index') }}" wire:navigate class="inline-flex items-center rounded-xl bg-zinc-950 px-4 py-2.5 text-sm font-medium text-white dark:bg-zinc-100 dark:text-zinc-900">
-                            Open catalog
-                        </a>
-                        <a href="{{ route('campaigns.index') }}" wire:navigate class="inline-flex items-center rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:border-zinc-600 dark:text-zinc-200">
-                            View campaigns
-                        </a>
+                        @if (Route::has('catalog.index'))
+                            <a href="{{ route('catalog.index') }}" wire:navigate class="inline-flex items-center rounded-xl bg-zinc-950 px-4 py-2.5 text-sm font-medium text-white dark:bg-zinc-100 dark:text-zinc-900">
+                                Open catalog
+                            </a>
+                        @endif
+                        @if (Route::has('campaigns.index'))
+                            <a href="{{ route('campaigns.index') }}" wire:navigate class="inline-flex items-center rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:border-zinc-600 dark:text-zinc-200">
+                                View campaigns
+                            </a>
+                        @endif
                     </div>
                 </div>
 
@@ -43,13 +47,17 @@
                 </p>
 
                 <div class="mt-4 flex flex-wrap gap-3">
-                    <a href="{{ route('catalog.index') }}" wire:navigate class="inline-flex items-center rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:border-zinc-600 dark:text-zinc-200">
-                        Catalog
-                    </a>
+                    @if (Route::has('catalog.index'))
+                        <a href="{{ route('catalog.index') }}" wire:navigate class="inline-flex items-center rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:border-zinc-600 dark:text-zinc-200">
+                            Catalog
+                        </a>
+                    @endif
 
-                    <a href="{{ route('campaigns.index') }}" wire:navigate class="inline-flex items-center rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:border-zinc-600 dark:text-zinc-200">
-                        Campaigns
-                    </a>
+                    @if (Route::has('campaigns.index'))
+                        <a href="{{ route('campaigns.index') }}" wire:navigate class="inline-flex items-center rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:border-zinc-600 dark:text-zinc-200">
+                            Campaigns
+                        </a>
+                    @endif
 
                     @if (auth()->user()->isAdmin())
                         <a href="{{ route('admin.users') }}" wire:navigate class="inline-flex items-center rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:border-zinc-600 dark:text-zinc-200">
@@ -66,12 +74,16 @@
             <div class="rounded-3xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
                 <h2 class="text-lg font-semibold text-zinc-950 dark:text-zinc-50">Overview</h2>
                 <div class="mt-4 space-y-3">
-                    <div class="rounded-2xl bg-zinc-50 p-4 dark:bg-zinc-800/60">
-                        <div class="text-xs uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400">Catalog</div>
-                    </div>
-                    <div class="rounded-2xl bg-zinc-50 p-4 dark:bg-zinc-800/60">
-                        <div class="text-xs uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400">Campaigns</div>
-                    </div>
+                    @if (Route::has('catalog.index'))
+                        <div class="rounded-2xl bg-zinc-50 p-4 dark:bg-zinc-800/60">
+                            <div class="text-xs uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400">Catalog</div>
+                        </div>
+                    @endif
+                    @if (Route::has('campaigns.index'))
+                        <div class="rounded-2xl bg-zinc-50 p-4 dark:bg-zinc-800/60">
+                            <div class="text-xs uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400">Campaigns</div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

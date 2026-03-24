@@ -6,7 +6,6 @@ namespace Module2\CampaignsModule\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Module1\CatalogModule\Models\CatalogItem;
 use Module2\CampaignsModule\Enums\AudienceType;
 use Module2\CampaignsModule\Enums\CampaignStatus;
 use Module2\CampaignsModule\Enums\CampaignType;
@@ -42,7 +41,13 @@ class CampaignNotification extends Model
 
     public function catalogItem(): BelongsTo
     {
-        return $this->belongsTo(CatalogItem::class);
+        $catalogItemModel = \Module1\CatalogModule\Models\CatalogItem::class;
+
+        if (! class_exists($catalogItemModel)) {
+            return $this->belongsTo(self::class, 'catalog_item_id')->whereRaw('1 = 0');
+        }
+
+        return $this->belongsTo($catalogItemModel, 'catalog_item_id');
     }
 
     public function getRouteKeyName(): string

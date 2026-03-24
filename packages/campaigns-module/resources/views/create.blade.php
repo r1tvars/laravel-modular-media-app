@@ -3,7 +3,9 @@
         <div>
             <h1 class="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Create Campaign Notification</h1>
             <p class="text-sm text-zinc-600 dark:text-zinc-400">
-                Create a campaign linked to a catalog item or a general announcement.
+                {{ $catalogModuleInstalled
+                    ? 'Create a campaign linked to a catalog item or a general announcement.'
+                    : 'Create a general campaign announcement. Catalog-linked campaigns require the Catalog module.' }}
             </p>
         </div>
 
@@ -54,10 +56,16 @@
                         required
                     >
                         <option value="general" @selected(old('campaign_type', 'general') === 'general')>General</option>
-                        <option value="catalog_item" @selected(old('campaign_type', 'general') === 'catalog_item')>Catalog item</option>
+                        @if ($catalogModuleInstalled)
+                            <option value="catalog_item" @selected(old('campaign_type', 'general') === 'catalog_item')>Catalog item</option>
+                        @endif
                     </select>
                     <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-                        Choose <span class="font-medium">Catalog item</span> to link this campaign to a media item, or <span class="font-medium">General</span> for a platform-wide message.
+                        @if ($catalogModuleInstalled)
+                            Choose <span class="font-medium">Catalog item</span> to link this campaign to a media item, or <span class="font-medium">General</span> for a platform-wide message.
+                        @else
+                            Only <span class="font-medium">General</span> campaigns are available on this server.
+                        @endif
                     </p>
                 </div>
 
@@ -76,7 +84,11 @@
                         @endforeach
                     </select>
                     <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-                        Required only when the campaign type is <span class="font-medium">Catalog item</span>.
+                        @if ($catalogModuleInstalled)
+                            Required only when the campaign type is <span class="font-medium">Catalog item</span>.
+                        @else
+                            Catalog item selection is unavailable because the Catalog module is not installed.
+                        @endif
                     </p>
                 </div>
 

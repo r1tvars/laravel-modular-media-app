@@ -20,8 +20,7 @@ use SupportModule\Contracts\CatalogItemLookupInterface;
 final class CampaignNotificationController extends Controller
 {
     public function __construct(
-        private readonly CampaignNotificationService $campaignNotificationService,
-        private readonly CatalogItemLookupInterface $catalogItemLookup
+        private readonly CampaignNotificationService $campaignNotificationService
     ) {
 
     }
@@ -33,6 +32,7 @@ final class CampaignNotificationController extends Controller
     {
         return view('campaigns::index', [
             'campaigns' => $this->campaignNotificationService->getAll(),
+            'catalogModuleInstalled' => $this->hasCatalogModule(),
         ]);
     }
 
@@ -42,7 +42,10 @@ final class CampaignNotificationController extends Controller
     public function show(CampaignNotification $campaignNotification): View
     {
         return view('campaigns::show', [
-            'campaign' => $campaignNotification->load('catalogItem'),
+            'campaign' => $this->hasCatalogModule()
+                ? $campaignNotification->load('catalogItem')
+                : $campaignNotification,
+            'catalogModuleInstalled' => $this->hasCatalogModule(),
         ]);
     }
 
@@ -52,7 +55,8 @@ final class CampaignNotificationController extends Controller
     public function create(): View
     {
         return view('campaigns::create', [
-            'catalogItems' => $this->catalogItemLookup->getCampaignSelectableItems(),
+            'catalogItems' => $this->getCatalogItems(),
+            'catalogModuleInstalled' => $this->hasCatalogModule(),
         ]);
     }
 
@@ -82,7 +86,8 @@ final class CampaignNotificationController extends Controller
     {
         return view('campaigns::edit', [
             'campaign' => $campaignNotification,
-            'catalogItems' => $this->catalogItemLookup->getCampaignSelectableItems(),
+            'catalogItems' => $this->getCatalogItems(),
+            'catalogModuleInstalled' => $this->hasCatalogModule(),
         ]);
     }
 
@@ -118,6 +123,30 @@ final class CampaignNotificationController extends Controller
     }
 
     /**
+     * Retrieve catalog items for campaign selection when the Catalog module is available.
+     *
+     * Allows the Campaigns module to run independently on a environemt where
+     * the Catalog module is not installed.
+     *
+     */
+    private function getCatalogItems(): array
+    {
+        if (! $this->hasCatalogModule()) {
+            return [];
+        }
+
+        /** @var CatalogItemLookupInterface $lookup */
+        $lookup = app(CatalogItemLookupInterface::class);
+
+        return $lookup->getCampaignSelectableItems();
+    }
+
+    private function hasCatalogModule(): bool
+    {
+        return app()->bound(CatalogItemLookupInterface::class);
+    }
+
+    /**
      * Validate campaign form input.
      *
      * Catalog-linked campaigns must reference an existing catalog item,
@@ -127,25 +156,35 @@ final class CampaignNotificationController extends Controller
      */
     private function validateCampaign(Request $request): array
     {
-        return $request->validate(
-            [
-                'title' => ['required', 'string', 'max:255'],
-                'message' => ['required', 'string'],
-                'campaign_type' => ['required', 'string', Rule::in(CampaignType::values())],
-                'catalog_item_id' => [
-                    Rule::requiredIf($request->input('campaign_type') === CampaignType::CatalogItem->value),
-                    'nullable',
-                    'integer',
-                    'exists:catalog_items,id',
-                ],
-                'audience_type' => ['required', 'string', Rule::in(AudienceType::values())],
-                'status' => ['required', 'string', Rule::in(CampaignStatus::values())],
-                'send_at' => ['nullable', 'date'],
-            ],
-            [
-                'catalog_item_id.required' => 'Please select a catalog item when the campaign type is Catalog item.',
-                'catalog_item_id.exists' => 'The selected catalog item does not exist.',
-            ]
-        );
+        $allowedCampaignTypes = $this->hasCatalogModule()
+            ? CampaignType::values()
+            : [CampaignType::General->value];
+
+        $catalogItemRules = [
+            Rule::requiredIf(
+                $request->input('campaign_type') === CampaignType::CatalogItem->value
+                && $this->hasCatalogModule()
+            ),
+            'nullable',
+            'integer',
+        ];
+
+        if ($this->hasCatalogModule()) {
+            $catalogItemRules[] = 'exists:catalog_items,id';
+        }
+
+        return $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'message' => ['required', 'string'],
+            'campaign_type' => ['required', 'string', Rule::in($allowedCampaignTypes)],
+            'catalog_item_id' => $catalogItemRules,
+            'audience_type' => ['required', 'string', Rule::in(AudienceType::values())],
+            'status' => ['required', 'string', Rule::in(CampaignStatus::values())],
+            'send_at' => ['nullable', 'date'],
+        ], [
+            'campaign_type.in' => 'Catalog-linked campaigns require the Catalog module to be installed.',
+            'catalog_item_id.required' => 'Please select a catalog item when the campaign type is Catalog item.',
+            'catalog_item_id.exists' => 'The selected catalog item does not exist.',
+        ]);
     }
 }

@@ -3,9 +3,9 @@
 namespace Module2\CampaignsModule\Services;
 
 use Illuminate\Database\Eloquent\Collection;
+use Module2\CampaignsModule\Jobs\ProcessCampaignNotificationJob;
 use Module2\CampaignsModule\Models\CampaignNotification;
 use SupportModule\Services\SlugGenerator;
-use App\Jobs\ProcessCampaignNotificationJob;
 
 /**
  * Handles campaign notification business operations.
@@ -23,10 +23,13 @@ class CampaignNotificationService
      */
     public function getAll(): Collection
     {
-        return CampaignNotification::query()
-            ->with('catalogItem')
-            ->latest()
-            ->get();
+        $query = CampaignNotification::query()->latest();
+
+        if (app()->bound(\SupportModule\Contracts\CatalogItemLookupInterface::class)) {
+            $query->with('catalogItem');
+        }
+
+        return $query->get();
     }
 
     /**
@@ -45,7 +48,7 @@ class CampaignNotificationService
 
         $campaign = CampaignNotification::query()->create($data);
 
-        ProcessCampaignNotificationJob::dispatch($campaign->id);
+        dispatch(new ProcessCampaignNotificationJob($campaign->id));
 
         return $campaign;
     }
