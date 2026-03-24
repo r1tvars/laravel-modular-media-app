@@ -28,6 +28,8 @@ The application can run in three variants:
 
 ## Run With Docker
 
+Copy .env.example and create .env in app-main
+
 From the project root:
 
 Run all variants:
