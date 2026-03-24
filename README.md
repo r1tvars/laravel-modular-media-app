@@ -96,6 +96,8 @@ docker compose exec app_full php artisan migrate --force
 docker compose exec app_full php artisan db:seed --force
 ~~~
 
+After a successful seed, example users can be found in the `DatabaseSeeder.php` file.
+
 ## Stop Containers
 
 ~~~bash
