@@ -13,10 +13,6 @@ class CatalogServiceProvider extends ServiceProvider
             __DIR__ . '/../config/catalog.php',
             'catalog'
         );
-
-        $this->app->singleton(CatalogService::class, function (): CatalogService {
-            return new CatalogService();
-        });
     }
 
     public function boot(): void

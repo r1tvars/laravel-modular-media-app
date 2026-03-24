@@ -1,0 +1,24 @@
+{
+    "name": "module-support/support-module",
+    "description": "Shared support module with reusable services for other modules",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "SupportModule\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "SupportModule\\SupportServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

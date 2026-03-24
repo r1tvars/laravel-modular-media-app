@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2c8abeba5c05700e19a713c2731a355b",
+    "content-hash": "dd994f0ca8074bdef30c6704d0d53858",
     "packages": [
         {
             "name": "brick/math",
@@ -2232,6 +2232,40 @@
                 "source": "https://github.com/livewire/volt"
             },
             "time": "2026-03-05T19:21:22+00:00"
+        },
+        {
+            "name": "module-support/support-module",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "/var/www/packages/support-module",
+                "reference": "c5d5ccddb4a6738b00ee778bf2416317c44b14ec"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "SupportModule\\SupportServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "SupportModule\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Shared support module with reusable services for other modules",
+            "transport-options": {
+                "symlink": true,
+                "relative": false
+            }
         },
         {
             "name": "module1/catalog-module",
