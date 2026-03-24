@@ -1,10 +1,17 @@
 # Laravel Modular Media App
 
-Modules:
+## About the Application
+Laravel Modular Media App is a modular Laravel-based system for managing media-related content and communication features. The main application provides the shared foundation, while individual modules add specific business functionality and can be enabled or excluded depending on the server variant.
+
+The `catalog-module` is responsible for media catalog functionality, such as managing and displaying items in the catalogue. The `campaigns-module` handles message campaign features and notification-related functionality. The `support-module` contains shared logic and reusable code used by the other modules.
+
+## Modules
 
 - `catalog-module`
 - `campaigns-module`
 - `support-module`
+
+## Application Variants
 
 The application can run in three variants:
 
@@ -60,7 +67,7 @@ docker compose exec app_campaigns php artisan key:generate --force
 docker compose exec app_full php artisan key:generate --force
 ~~~
 
-Install frontend dependencies, build assets, and run migrations for each variant.
+Install frontend dependencies, build assets, and run migrations for each variant:
 
 ### Catalog
 
@@ -68,7 +75,6 @@ Install frontend dependencies, build assets, and run migrations for each variant
 docker compose exec app_catalog npm install
 docker compose exec app_catalog npm run build
 docker compose exec app_catalog php artisan migrate --force
-docker compose exec app_catalog php artisan db:seed --force
 ~~~
 
 ### Campaigns
@@ -77,7 +83,6 @@ docker compose exec app_catalog php artisan db:seed --force
 docker compose exec app_campaigns npm install
 docker compose exec app_campaigns npm run build
 docker compose exec app_campaigns php artisan migrate --force
-docker compose exec app_campaigns php artisan db:seed --force
 ~~~
 
 ### Full
@@ -116,3 +121,4 @@ These decide which module packages are loaded for each app variant.
 
 - Queue workers are started for the campaigns and full variants.
 - The same `app-main/.env` file is used by all three variants.
+- Database seeding is intended to be run from the full application variant.
