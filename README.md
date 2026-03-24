@@ -26,31 +26,71 @@ The application can run in three variants:
 - Docker
 - Docker Compose
 
+## Initial Setup
+
+Copy the environment file:
+
+~~~bash
+cp app-main/.env.example app-main/.env
+~~~
+
 ## Run With Docker
 
-Copy .env.example and create .env in app-main
+From the project root, start all variants:
 
-From the project root:
-
-Run all variants:
-
-```bash
+~~~bash
 docker compose --profile all up -d --build
-```
+~~~
 
-Run one variant only:
+Or run one variant only:
 
-```bash
+~~~bash
 docker compose --profile catalog up -d --build
 docker compose --profile campaigns up -d --build
 docker compose --profile full up -d --build
-```
+~~~
 
-Stop containers:
+## Laravel App Setup
 
-```bash
+Generate the application key for each variant:
+
+~~~bash
+docker compose exec app_catalog php artisan key:generate --force
+docker compose exec app_campaigns php artisan key:generate --force
+docker compose exec app_full php artisan key:generate --force
+~~~
+
+Install frontend dependencies, build assets, and run migrations for each variant.
+
+### Catalog
+
+~~~bash
+docker compose exec app_catalog npm install
+docker compose exec app_catalog npm run build
+docker compose exec app_catalog php artisan migrate --force
+~~~
+
+### Campaigns
+
+~~~bash
+docker compose exec app_campaigns npm install
+docker compose exec app_campaigns npm run build
+docker compose exec app_campaigns php artisan migrate --force
+~~~
+
+### Full
+
+~~~bash
+docker compose exec app_full npm install
+docker compose exec app_full npm run build
+docker compose exec app_full php artisan migrate --force
+~~~
+
+## Stop Containers
+
+~~~bash
 docker compose down
-```
+~~~
 
 ## Ports
 
@@ -67,8 +107,9 @@ The Docker build uses different Composer files for each server variant:
 - `app-main/composer.campaigns.json`
 - `app-main/composer.full.json`
 
-These decide which modules are installed in the container.
+These decide which module packages are loaded for each app variant.
 
 ## Notes
 
 - Queue workers are started for the campaigns and full variants.
+- The same `app-main/.env` file is used by all three variants.
