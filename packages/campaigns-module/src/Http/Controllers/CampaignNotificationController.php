@@ -7,12 +7,12 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Validation\Rule;
-use Module1\CatalogModule\Models\CatalogItem;
 use Module2\CampaignsModule\Enums\AudienceType;
 use Module2\CampaignsModule\Enums\CampaignStatus;
 use Module2\CampaignsModule\Enums\CampaignType;
 use Module2\CampaignsModule\Models\CampaignNotification;
 use Module2\CampaignsModule\Services\CampaignNotificationService;
+use SupportModule\Contracts\CatalogItemLookupInterface;
 
 /**
  * Handles HTTP endpoints for campaign notification management.
@@ -20,7 +20,8 @@ use Module2\CampaignsModule\Services\CampaignNotificationService;
 final class CampaignNotificationController extends Controller
 {
     public function __construct(
-        private readonly CampaignNotificationService $campaignNotificationService
+        private readonly CampaignNotificationService $campaignNotificationService,
+        private readonly CatalogItemLookupInterface $catalogItemLookup
     ) {
 
     }
@@ -51,9 +52,7 @@ final class CampaignNotificationController extends Controller
     public function create(): View
     {
         return view('campaigns::create', [
-            'catalogItems' => CatalogItem::query()
-                ->orderBy('title')
-                ->get(),
+            'catalogItems' => $this->catalogItemLookup->getCampaignSelectableItems(),
         ]);
     }
 
@@ -64,6 +63,7 @@ final class CampaignNotificationController extends Controller
     {
         $validated = $this->validateCampaign($request);
 
+        // General campaigns are not linked to a specific catalog item.
         if ($validated['campaign_type'] === CampaignType::General->value) {
             $validated['catalog_item_id'] = null;
         }
@@ -82,9 +82,7 @@ final class CampaignNotificationController extends Controller
     {
         return view('campaigns::edit', [
             'campaign' => $campaignNotification,
-            'catalogItems' => CatalogItem::query()
-                ->orderBy('title')
-                ->get(),
+            'catalogItems' => $this->catalogItemLookup->getCampaignSelectableItems(),
         ]);
     }
 
@@ -95,6 +93,7 @@ final class CampaignNotificationController extends Controller
     {
         $validated = $this->validateCampaign($request);
 
+        // General campaigns are not linked to a specific catalog item.
         if ($validated['campaign_type'] === CampaignType::General->value) {
             $validated['catalog_item_id'] = null;
         }
