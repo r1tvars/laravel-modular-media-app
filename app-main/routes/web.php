@@ -23,8 +23,6 @@ Route::middleware(['auth'])->group(function () {
         Route::livewire('users/create', 'pages::admin.users.create')->name('users.create');
         Route::livewire('users/{user}/edit', 'pages::admin.users.edit')->name('users.edit');
     });
-
-    Route::view('campaigns', 'campaigns.index')->name('campaigns.index');
 });
 
 require __DIR__.'/auth.php';
