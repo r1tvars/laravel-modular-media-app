@@ -22,6 +22,13 @@
             "options": {
                 "symlink": true
             }
+        },
+        {
+            "type": "path",
+            "url": "/var/www/packages/campaigns-module",
+            "options": {
+                "symlink": true
+            }
         }
     ],
     "require": {
@@ -31,7 +38,8 @@
         "livewire/flux": "^2.0",
         "livewire/volt": "^1.6.7",
         "module-support/support-module": "*",
-        "module1/catalog-module": "*"
+        "module1/catalog-module": "*",
+        "module2/campaigns-module": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

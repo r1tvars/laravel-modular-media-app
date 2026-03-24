@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dd994f0ca8074bdef30c6704d0d53858",
+    "content-hash": "83cfc70d847b526ccd8acb05a22b5f16",
     "packages": [
         {
             "name": "brick/math",
@@ -2299,6 +2299,43 @@
                 "MIT"
             ],
             "description": "Catalog module for the Laravel modular monolith homework",
+            "transport-options": {
+                "symlink": true,
+                "relative": false
+            }
+        },
+        {
+            "name": "module2/campaigns-module",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "/var/www/packages/campaigns-module",
+                "reference": "98f2dc75bdae4fda8d20a8acd38b92671327071a"
+            },
+            "require": {
+                "illuminate/database": "^12.0",
+                "illuminate/routing": "^12.0",
+                "illuminate/support": "^12.0",
+                "illuminate/view": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Module2\\CampaignsModule\\CampaignsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Module2\\CampaignsModule\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Campaign notifications module for the Laravel modular monolith homework",
             "transport-options": {
                 "symlink": true,
                 "relative": false
