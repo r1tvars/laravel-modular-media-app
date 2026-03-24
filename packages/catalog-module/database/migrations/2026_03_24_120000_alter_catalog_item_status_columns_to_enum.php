@@ -7,6 +7,12 @@ return new class extends Migration
 {
     public function up(): void
     {
+        $driver = DB::getDriverName();
+
+        if ($driver !== 'mysql') {
+            return;
+        }
+
         DB::table('catalog_items')
             ->whereNotIn('publication_status', ['draft', 'published', 'archived'])
             ->update(['publication_status' => 'draft']);
@@ -30,6 +36,12 @@ return new class extends Migration
 
     public function down(): void
     {
+        $driver = DB::getDriverName();
+
+        if ($driver !== 'mysql') {
+            return;
+        }
+
         DB::statement("
             ALTER TABLE catalog_items
             MODIFY publication_status VARCHAR(255)
