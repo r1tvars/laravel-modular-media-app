@@ -11,6 +11,7 @@ use Module1\CatalogModule\Models\CatalogItem;
 use Module2\CampaignsModule\Enums\AudienceType;
 use Module2\CampaignsModule\Enums\CampaignStatus;
 use Module2\CampaignsModule\Enums\CampaignType;
+use Module2\CampaignsModule\Models\CampaignNotification;
 use Module2\CampaignsModule\Services\CampaignNotificationService;
 
 /**
@@ -21,8 +22,12 @@ final class CampaignNotificationController extends Controller
     public function __construct(
         private readonly CampaignNotificationService $campaignNotificationService
     ) {
+
     }
 
+    /**
+     * Display the campaign listing page.
+     */
     public function index(): View
     {
         return view('campaigns::index', [
@@ -30,6 +35,19 @@ final class CampaignNotificationController extends Controller
         ]);
     }
 
+    /**
+     * Display a single campaign details page.
+     */
+    public function show(CampaignNotification $campaignNotification): View
+    {
+        return view('campaigns::show', [
+            'campaign' => $campaignNotification->load('catalogItem'),
+        ]);
+    }
+
+    /**
+     * Show the campaign creation form.
+     */
     public function create(): View
     {
         return view('campaigns::create', [
@@ -39,6 +57,9 @@ final class CampaignNotificationController extends Controller
         ]);
     }
 
+    /**
+     * Store a newly created campaign notification.
+     */
     public function store(Request $request): RedirectResponse
     {
         $validated = $this->validateCampaign($request);
@@ -55,18 +76,77 @@ final class CampaignNotificationController extends Controller
     }
 
     /**
+     * Show the campaign edit form.
+     */
+    public function edit(CampaignNotification $campaignNotification): View
+    {
+        return view('campaigns::edit', [
+            'campaign' => $campaignNotification,
+            'catalogItems' => CatalogItem::query()
+                ->orderBy('title')
+                ->get(),
+        ]);
+    }
+
+    /**
+     * Show the campaign edit form.
+     */
+    public function update(Request $request, CampaignNotification $campaignNotification): RedirectResponse
+    {
+        $validated = $this->validateCampaign($request);
+
+        if ($validated['campaign_type'] === CampaignType::General->value) {
+            $validated['catalog_item_id'] = null;
+        }
+
+        $this->campaignNotificationService->update($campaignNotification, $validated);
+
+        return redirect()
+            ->route('campaigns.index')
+            ->with('success', 'Campaign notification updated successfully.');
+    }
+
+    /**
+     * Delete a campaign notification.
+     */
+    public function destroy(CampaignNotification $campaignNotification): RedirectResponse
+    {
+        $this->campaignNotificationService->delete($campaignNotification);
+
+        return redirect()
+            ->route('campaigns.index')
+            ->with('success', 'Campaign notification deleted successfully.');
+    }
+
+    /**
+     * Validate campaign form input.
+     *
+     * Catalog-linked campaigns must reference an existing catalog item,
+     * while general campaigns may leave that relation empty.
+     *
      * @return array
      */
     private function validateCampaign(Request $request): array
     {
-        return $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'message' => ['required', 'string'],
-            'campaign_type' => ['required', 'string', Rule::in(CampaignType::values())],
-            'catalog_item_id' => ['nullable', 'integer', 'exists:catalog_items,id'],
-            'audience_type' => ['required', 'string', Rule::in(AudienceType::values())],
-            'status' => ['required', 'string', Rule::in(CampaignStatus::values())],
-            'send_at' => ['nullable', 'date'],
-        ]);
+        return $request->validate(
+            [
+                'title' => ['required', 'string', 'max:255'],
+                'message' => ['required', 'string'],
+                'campaign_type' => ['required', 'string', Rule::in(CampaignType::values())],
+                'catalog_item_id' => [
+                    Rule::requiredIf($request->input('campaign_type') === CampaignType::CatalogItem->value),
+                    'nullable',
+                    'integer',
+                    'exists:catalog_items,id',
+                ],
+                'audience_type' => ['required', 'string', Rule::in(AudienceType::values())],
+                'status' => ['required', 'string', Rule::in(CampaignStatus::values())],
+                'send_at' => ['nullable', 'date'],
+            ],
+            [
+                'catalog_item_id.required' => 'Please select a catalog item when the campaign type is Catalog item.',
+                'catalog_item_id.exists' => 'The selected catalog item does not exist.',
+            ]
+        );
     }
 }

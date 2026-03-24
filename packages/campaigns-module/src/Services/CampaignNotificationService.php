@@ -44,4 +44,40 @@ class CampaignNotificationService
 
         return CampaignNotification::query()->create($data);
     }
+
+    /**
+     * Update an existing campaign notification.
+     *
+     * If the title changes, the slug is regenerated.
+     *
+     * @param array $data
+     */
+    public function update(CampaignNotification $campaignNotification, array $data): CampaignNotification
+    {
+        if (
+            array_key_exists('title', $data) &&
+            is_string($data['title']) &&
+            $data['title'] !== $campaignNotification->title
+        ) {
+            $data['slug'] = $this->slugGenerator->generateUnique(
+                $data['title'],
+                fn (string $slug): bool => CampaignNotification::query()
+                    ->where('slug', $slug)
+                    ->where('id', '!=', $campaignNotification->id)
+                    ->exists()
+            );
+        }
+
+        $campaignNotification->update($data);
+
+        return $campaignNotification->refresh();
+    }
+
+    /**
+     * Delete a campaign notification.
+     */
+    public function delete(CampaignNotification $campaignNotification): void
+    {
+        $campaignNotification->delete();
+    }
 }

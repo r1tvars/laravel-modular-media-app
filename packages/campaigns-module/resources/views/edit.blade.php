@@ -1,9 +1,9 @@
 <x-layouts.app>
     <div class="mx-auto max-w-3xl space-y-6 p-6 lg:p-8">
         <div>
-            <h1 class="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Create Campaign Notification</h1>
+            <h1 class="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Edit Campaign Notification</h1>
             <p class="text-sm text-zinc-600 dark:text-zinc-400">
-                Create a campaign linked to a catalog item or a general announcement.
+                Update an existing campaign notification.
             </p>
         </div>
 
@@ -18,8 +18,9 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('campaigns.store') }}" class="space-y-6 rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-700 dark:bg-zinc-800">
+        <form method="POST" action="{{ route('campaigns.update', $campaign) }}" class="space-y-6 rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-700 dark:bg-zinc-800">
             @csrf
+            @method('PUT')
 
             <div class="grid gap-6 md:grid-cols-2">
                 <div class="md:col-span-2">
@@ -28,7 +29,7 @@
                         id="title"
                         name="title"
                         type="text"
-                        value="{{ old('title') }}"
+                        value="{{ old('title', $campaign->title) }}"
                         class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
                         required
                     >
@@ -42,7 +43,7 @@
                         rows="5"
                         class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
                         required
-                    >{{ old('message') }}</textarea>
+                    >{{ old('message', $campaign->message) }}</textarea>
                 </div>
 
                 <div>
@@ -53,8 +54,8 @@
                         class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
                         required
                     >
-                        <option value="general" @selected(old('campaign_type', 'general') === 'general')>General</option>
-                        <option value="catalog_item" @selected(old('campaign_type', 'general') === 'catalog_item')>Catalog item</option>
+                        <option value="general" @selected(old('campaign_type', $campaign->campaign_type?->value) === 'general')>General</option>
+                        <option value="catalog_item" @selected(old('campaign_type', $campaign->campaign_type?->value) === 'catalog_item')>Catalog item</option>
                     </select>
                     <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
                         Choose <span class="font-medium">Catalog item</span> to link this campaign to a media item, or <span class="font-medium">General</span> for a platform-wide message.
@@ -70,7 +71,10 @@
                     >
                         <option value="">None</option>
                         @foreach ($catalogItems as $catalogItem)
-                            <option value="{{ $catalogItem->id }}" @selected((string) old('catalog_item_id') === (string) $catalogItem->id)>
+                            <option
+                                value="{{ $catalogItem->id }}"
+                                @selected((string) old('catalog_item_id', $campaign->catalog_item_id) === (string) $catalogItem->id)
+                            >
                                 {{ $catalogItem->title }}
                             </option>
                         @endforeach
@@ -88,8 +92,8 @@
                         class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
                         required
                     >
-                        <option value="all_users" @selected(old('audience_type', 'all_users') === 'all_users')>All users</option>
-                        <option value="selected_users" @selected(old('audience_type', 'all_users') === 'selected_users')>Selected users</option>
+                        <option value="all_users" @selected(old('audience_type', $campaign->audience_type?->value) === 'all_users')>All users</option>
+                        <option value="selected_users" @selected(old('audience_type', $campaign->audience_type?->value) === 'selected_users')>Selected users</option>
                     </select>
                 </div>
 
@@ -101,9 +105,9 @@
                         class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
                         required
                     >
-                        <option value="draft" @selected(old('status', 'draft') === 'draft')>Draft</option>
-                        <option value="scheduled" @selected(old('status', 'draft') === 'scheduled')>Scheduled</option>
-                        <option value="sent" @selected(old('status', 'draft') === 'sent')>Sent</option>
+                        <option value="draft" @selected(old('status', $campaign->status?->value) === 'draft')>Draft</option>
+                        <option value="scheduled" @selected(old('status', $campaign->status?->value) === 'scheduled')>Scheduled</option>
+                        <option value="sent" @selected(old('status', $campaign->status?->value) === 'sent')>Sent</option>
                     </select>
                 </div>
 
@@ -113,7 +117,7 @@
                         id="send_at"
                         name="send_at"
                         type="datetime-local"
-                        value="{{ old('send_at') }}"
+                        value="{{ old('send_at', $campaign->send_at?->format('Y-m-d\TH:i')) }}"
                         class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
                     >
                 </div>
@@ -124,7 +128,7 @@
                     type="submit"
                     class="inline-flex items-center rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white dark:bg-white dark:text-zinc-900"
                 >
-                    Save campaign
+                    Update campaign
                 </button>
 
                 <a href="{{ route('campaigns.index') }}" class="text-sm text-zinc-600 dark:text-zinc-300">
